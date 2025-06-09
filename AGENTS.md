@@ -15,7 +15,7 @@ If something seems like it's not installed for you, try re-activating the enviro
 
 ## Testing Instructions
 
-All tests live in `sim/tests/`.
+All tests live in `tests/`.
 
 Run a test file like so:
 

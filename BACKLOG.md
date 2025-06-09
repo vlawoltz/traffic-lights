@@ -27,6 +27,38 @@ This document outlines potential areas for expanding the simulation. Each featur
   - Force a long queue on one approach and confirm that the adaptive controller extends its green time.
   - Compare average wait time between fixed-time and adaptive control in a small simulation run.
 
+### Realistic traffic flow modeling
+- Add dedicated lane objects to represent left, through, and right movements
+- Allow lanes to be configured with individual capacities
+- Support different arrival distributions for generating vehicles
+- Apply turning probabilities so vehicles select lanes realistically
+- Model acceleration and deceleration when clearing queued vehicles
+- **Implementation notes**
+  - Create a `Lane` class with `capacity` and `movement` attributes
+  - Update `Intersection` to maintain multiple lanes per approach
+  - Provide an `ArrivalDistribution` interface with Poisson and uniform implementations
+  - Extend the vehicle generator to choose lanes based on configured turn probabilities
+  - Incorporate acceleration delays into the queue discharge logic
+- **Tests to consider**
+  - Ensure lane queues never exceed their configured capacity
+  - Check that arrival distributions produce expected counts over many runs
+  - Verify that the percentage of turning vehicles matches the configuration
+  - Confirm that enabling acceleration delays increases total clearing time
+
+### Optimize signal timing
+- Record queue lengths and waiting times for each direction
+- Compute total delay from recorded metrics
+- Search for phase durations that minimize the delay
+- Provide an offline script to apply the optimizer to saved runs
+- **Implementation notes**
+  - Extend `metrics.py` to log per-lane queues at every timestep
+  - Implement a `calculate_delay` helper summing all waiting time
+  - Use a simple hill-climbing search to tweak green durations within bounds
+  - Expose a `run_optimizer(data, plan)` function for offline analysis
+- **Tests to consider**
+  - Verify that optimization reduces total delay on a deterministic scenario
+  - Ensure optimized timings respect minimum and maximum duration limits
+
 ### Pedestrian crossing logic
 - Dedicated crosswalk phases with push-button or timed activation
 - Track pedestrian wait times along with vehicles
